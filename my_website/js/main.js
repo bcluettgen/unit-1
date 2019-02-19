@@ -1,11 +1,4 @@
 
-//initialize function called when the script loads
-function myfunc(){
-    var mydiv = document.getElementById("mydiv");
-    mydiv.innerHTML = "Hello World!";
-	var mydiv2 = document.getElementById("mydiv2");
-};
-window.onload = myfunc();
 
 function initialize(){
 	cities();
@@ -86,22 +79,24 @@ function cities(){
 
     //add the event listener
     $('table').on('click', clickme);
-
+	//
 	addColumns(cityPop);
 	addEvents();
+	debugAjax();
+
 }
 
 function addColumns(cityPop){
    
     $('tr').each(function(i){
-		
+		//add the header when i = 0
     	if (i == 0){
 			
     		$(this).append('<th>City Size</th>');
     	} else {
 		
     		var citySize;
-
+			//show size of city based on if population falls into one of three ranges.
     		if (cityPop[i-1].population < 100000){
     			citySize = 'Small';
 			
@@ -111,18 +106,18 @@ function addColumns(cityPop){
     		} else {
     			citySize = 'Large';
 			};
-			
+			//append the city size based after it runs through if statements.
     		$(this).append('<td>' + citySize + '</td>');
     	};
     });
 };
 
 function addEvents(){
-
+	//create mousover function over table
 	$('table').mouseover(function(){
 		
 		var color = "rgb(";
-		
+		//for loop creates creates random colors and places html syntax
 		for (var i=0; i<3; i++){
 
 			var random = Math.round(Math.random() * 255);
@@ -136,7 +131,7 @@ function addEvents(){
 		};
 		$(this).css('color', color);
 	};
-		
+		//add a click function
 		function clickme(){
 
 		alert('Hey, you clicked me!');
@@ -144,5 +139,25 @@ function addEvents(){
 
 	$('table').on('click', clickme);
 })};
-	;//call the initialize function when the document has loaded
-	$(document).ready(initialize);
+//add introductory string to the webpage
+function debugCallback(mydata){
+	
+	$('#mydiv').append('GeoJSON data: ' + JSON.stringify(mydata));
+};
+//function calls data from megacities.geojson and lists out all attributes, by assigning response to a mydata variable.
+function debugAjax(){
+	
+	var mydata;
+//
+	$.ajax("data/MegaCities.geojson", {
+		dataType: "json",
+		success: function(response){
+			mydata=response;
+			debugCallback(mydata);
+		}
+	});
+};
+
+
+;//call the initialize function when the document has loaded
+$(document).ready(initialize);
